@@ -1,0 +1,72 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>日期组件</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="uix-calendar">
+        <div class="uix-calendar__header">
+          <div class="uix-calendar__selector">
+            <a href="javascript: 0;" class="uix-calendar__select-btn"><</a>
+            <span>2095</span>
+            <a href="javascript: 0;" class="uix-calendar__select-btn">></a>
+          </div>
+          <div class="uix-calendar__selector">
+            <a href="javascript: 0;" class="uix-calendar__select-btn"><</a>
+            <span>09</span>
+            <a href="javascript: 0;" class="uix-calendar__select-btn">></a>
+          </div>
+        </div>
+        <div class="uix-calendar__body">
+          <table class="uix-calendar__table">
+            <thead>
+              <tr>
+                <th>日</th>
+                <th>一</th>
+                <th>二</th>
+                <th>三</th>
+                <th>四</th>
+                <th>五</th>
+                <th>六</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="uix-calendar__date">1</td>
+                <td class="uix-calendar__date">2</td>
+                <td class="uix-calendar__date">3</td>
+                <td class="uix-calendar__date">4</td>
+                <td class="uix-calendar__date">5</td>
+                <td class="uix-calendar__date">6</td>
+                <td class="uix-calendar__date">7</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="wrapper wrapper2"></div>
+
+    <style>
+      .wrapper {
+        width: 400px;
+        border: 1px solid #ccc;
+        padding: 6px;
+      }
+    </style>
+    <link rel="stylesheet" href="/dist/index.css" />
+    <script src="/dist/index.js"></script>
+    <script>
+      let c = new UixCalendar(document.querySelector(".wrapper2"), {
+        renderMonth: [2020, 12],
+      });
+      console.log(c);
+      c.mount();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+.uix-calendar {
+  width: 100%;
+  .uix-calendar__header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 30px;
+  }
+  .uix-calendar__selector {
+  }
+  .uix-calendar__selector span {
+    padding: 0 20px;
+  }
+  .uix-calendar__select-btn {
+    text-decoration: none;
+    color: #000;
+  }
+
+  .uix-calendar__body {
+    width: 100%;
+  }
+  .uix-calendar__table {
+    width: 100%;
+  }
+  .uix-calendar__date {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height: 40px;
+    cursor: pointer;
+    padding: 0;
+    &:hover{
+      background-color: #eee;
+      border-radius: 2px;
+    }
+    &.uix-calendar__date--active{
+      background-color: #d9822b;
+    }
+  }
+}
