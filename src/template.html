@@ -1,0 +1,52 @@
+<div class="uix-calendar__header">
+  <div class="uix-calendar__selector">
+    <a
+      href="javascript: 0;"
+      class="uix-calendar__select-btn js-year-prev"
+      data-click-event="prevYear"
+      ><</a
+    >
+    <span>{{= it.year }}</span>
+    <a
+      href="javascript: 0;"
+      class="uix-calendar__select-btn js-year-next"
+      data-click-event="nextYear"
+      >></a
+    >
+  </div>
+  <div class="uix-calendar__selector">
+    <a
+      href="javascript: 0;"
+      class="uix-calendar__select-btn js-month-prev"
+      data-click-event="prevMonth"
+      ><</a
+    >
+    <span>{{= it.month }}</span>
+    <a
+      href="javascript: 0;"
+      class="uix-calendar__select-btn js-month-next"
+      data-click-event="nextMonth"
+      >></a
+    >
+  </div>
+</div>
+<div class="uix-calendar__body">
+  <table class="uix-calendar__table">
+    <thead>
+      <tr>
+        {{ for (let i = 0; i < it.weeksList.length; i++){ }}
+        <th>{{= it.weeksList[i] }}</th>
+        {{ } }}
+      </tr>
+    </thead>
+    <tbody>
+      {{ for (let i = 0; i < 6; i++) { }}
+      <tr>
+        {{ for (let j = 0; j < 7; j++) { }}
+        <td class="uix-calendar__date">{{= it.dates[i*7+j].date }}</td>
+        {{ } }}
+      </tr>
+      {{ } }}
+    </tbody>
+  </table>
+</div>
