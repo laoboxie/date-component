@@ -6,7 +6,7 @@
       data-click-event="prevYear"
       ><</a
     >
-    <span>{{= it.year }}</span>
+    <span class="uix-calendar__curr-year">{{= it.year }}</span>
     <a
       href="javascript: 0;"
       class="uix-calendar__select-btn js-year-next"
@@ -21,7 +21,7 @@
       data-click-event="prevMonth"
       ><</a
     >
-    <span>{{= it.month }}</span>
+    <span class="uix-calendar__curr-month">{{= it.month }}</span>
     <a
       href="javascript: 0;"
       class="uix-calendar__select-btn js-month-next"
@@ -42,8 +42,20 @@
     <tbody>
       {{ for (let i = 0; i < 6; i++) { }}
       <tr>
-        {{ for (let j = 0; j < 7; j++) { }}
-        <td class="uix-calendar__date">{{= it.dates[i*7+j].date }}</td>
+        {{ for (let j = 0; j < 7; j++) { }} {{ var item=it.dates[i*7+j] || {};
+        }}
+        <td
+          data-click-event="selectDate"
+          data-row-index="{{= i }}"
+          data-col-index="{{= j }}"
+          data-date-index="{{= i*7+j }}"
+          class="uix-calendar__date 
+          {{= item.dateType===2 ? '' : 'uix-calendar__date--gray' }}
+          {{= item.disabled===true ? 'uix-calendar__date--disabled' : '' }}
+          {{= item.isToday===true ? 'uix-calendar__date--today' : '' }}"
+        >
+          {{= item.innerHTML || item.date }}
+        </td>
         {{ } }}
       </tr>
       {{ } }}

@@ -29,6 +29,7 @@
     "del": "^6.0.0",
     "gulp": "^4.0.2",
     "gulp-less": "^4.0.1",
+    "jest": "^26.4.2",
     "string-loader": "0.0.1",
     "webpack-stream": "^3.2.0"
   },

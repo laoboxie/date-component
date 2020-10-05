@@ -1,6 +1,12 @@
-import { genDates } from "./util";
+import { genDates, genDateObj, template, formatDate } from "./util";
+import {
+  DATE_CLASS,
+  DATE_ACTIVE_CLASS,
+  DATE_TYPE,
+  PREV_MONTH,
+  NEXT_MONTH,
+} from "./const";
 import tmpl from "./template.html";
-import tmplEngine from "dot";
 
 const defaultOptions = {
   value: "",
@@ -9,11 +15,6 @@ const defaultOptions = {
   disableDateFunction: null,
   weeksList: ["日", "一", "二", "三", "四", "五", "六"],
 };
-
-const PREV_YEAR_CLASS = "js-year-prev";
-const NEXT_YEAR_CLASS = "js-year-next";
-const PREV_MONTH_CLASS = "js-month-prev";
-const NEXT_MONTH_CLASS = "js-month-next";
 
 class UixCalendar {
   constructor(parentNode, options) {
@@ -25,6 +26,7 @@ class UixCalendar {
     // 处理配置
     let opts = Object.assign({}, defaultOptions, options);
     this.options = opts;
+    this.value = this.options.value || "";
 
     // 处理渲染月份数据
     let { renderMonth } = opts;
@@ -36,13 +38,49 @@ class UixCalendar {
     }
     this.year = renderMonth[0];
     this.month = renderMonth[1];
-
+    ``;
     // 生成日历数据
     this.dates = this._genDates(this.year, this.month);
   }
 
   _genDates(year, month) {
-    return genDates(year, month);
+    let dates = genDates(year, month);
+    // 处理 isToday
+    let today = genDateObj(new Date());
+    for (let item of dates) {
+      if (
+        item.year === today.year &&
+        item.month === today.month &&
+        item.date === today.date
+      ) {
+        item.isToday = true;
+        break;
+      }
+    }
+    // 处理 disable-date-function
+    let disabledCb = this.options.disableDateFunction;
+    if (disabledCb) {
+      for (let item of dates) {
+        let res = disabledCb(item);
+        if (res === true) {
+          item.disabled = true;
+        } else {
+          item.disabled = false;
+        }
+      }
+    }
+    // 处理 render-function
+    let renderCb = this.options.renderFunction;
+    if (renderCb) {
+      for (let item of dates) {
+        let res = renderCb(item);
+        if (typeof res === "string") {
+          item.innerHTML = res;
+        }
+      }
+    }
+    console.log(dates);
+    return dates;
   }
 
   _validateMonth(month) {
@@ -58,45 +96,127 @@ class UixCalendar {
       year: this.year,
       month: this.month,
     };
-    let res = tmplEngine.template(tmpl)(data);
+    let res = template(tmpl, data);
     return res;
   }
 
   _initEventListener() {
+    let that = this;
     const clickEventMap = {
       prevYear: this.switchToPrevYear,
       nextYear: this.switchToNextYear,
       prevMonth: this.switchToPrevMonth,
       nextMonth: this.switchToNextMonth,
+      selectDate: this.selectDate,
     };
-    // 年按钮监听
-    let handler = function (e) {
+    // 点击监听
+    this._clickHandler = function (e) {
       let target = e.target;
-      let classList = Array.from(target.classList);
       let event = target.dataset.clickEvent;
       if (clickEventMap[event]) {
-        clickEventMap[event].apply(this);
+        clickEventMap[event].call(that, target);
       }
     };
-    this.ref.addEventListener("click", handler.bind(this));
+    this.ref.addEventListener("click", this._clickHandler);
   }
 
-  render() {
+  render(isFirst = false) {
     let res = this._compileTemplate();
     this.ref.innerHTML = res;
+
+    // viewChange 回调
+    let viewChangeCb = this.options.onViewChange;
+    viewChangeCb &&
+      viewChangeCb(
+        {
+          year: this.year,
+          month: this.month,
+        },
+        isFirst
+      );
   }
 
   mount() {
-    // let res = this._genHtml(this.options.weeksList, this.dates);
-    this.render();
+    if (!this.ref || !this.parentNode) {
+      return false;
+    }
+    this.render(true);
     this.parentNode.appendChild(this.ref);
     this._initEventListener();
+    this.show();
   }
 
-  show() {}
+  destroy() {
+    this.ref.removeEventListener("click", this._clickHandler);
+    this.parentNode.removeChild(this.ref);
+    this.ref = null;
+    this.parentNode = null;
+    this.value = null;
+    this.year = null;
+    this.month = null;
+    this.dates = null;
+    this.options = null;
+    this._clickHandler = null;
+  }
+
+  show() {
+    this.ref && (this.ref.style.display = "block");
+  }
+
+  hide() {
+    this.ref && (this.ref.style.display = "none");
+  }
 
   getDates() {
     return this.dates;
+  }
+
+  selectDate(target) {
+    let dataset = target.dataset;
+    let classList = target.classList;
+    let classListArr = Array.from(classList);
+    let date = this.dates[dataset.dateIndex];
+
+    if (date.disabled) {
+      return false;
+    }
+
+    // 处理 value
+    if (classListArr.includes(DATE_ACTIVE_CLASS)) {
+      this.value = "";
+    } else {
+      this.value = formatDate(date.year, date.month, date.date);
+    }
+
+    // 处理激活/失活样式
+    this._handleActiveClass();
+
+    if (date[DATE_TYPE] === PREV_MONTH) {
+      this.switchToPrevMonth();
+    } else if (date[DATE_TYPE] === NEXT_MONTH) {
+      this.switchToNextMonth();
+    }
+
+    // 处理回调
+    this._emitOnChange(this.value);
+  }
+
+  _emitOnChange(value) {
+    let onChangeCb = this.options.onChange;
+    onChangeCb && onChangeCb(value);
+  }
+
+  _handleActiveClass() {
+    let dateList = this.ref.querySelectorAll("." + DATE_CLASS);
+    Array.from(dateList).forEach((item) => {
+      let currDate = this.dates[item.dataset.dateIndex];
+      let currVal = formatDate(currDate.year, currDate.month, currDate.date);
+      if (this.value === currVal) {
+        item.classList.add(DATE_ACTIVE_CLASS);
+      } else {
+        item.classList.remove(DATE_ACTIVE_CLASS);
+      }
+    });
   }
 
   switchToNextYear() {
@@ -135,65 +255,7 @@ class UixCalendar {
     this.month = month;
     this.dates = this._genDates(year, month);
     this.render();
-  }
-
-  _genHtml(weeksList, dates) {
-    let row = 0;
-    let tbodyHtml = "";
-    let rowDates = dates.slice(row * 7, row * 7 + 7);
-    while (rowDates.length) {
-      tbodyHtml += `
-        <tr>
-          ${rowDates
-            .map((item, index) => {
-              return `
-                <td class="uix-calendar__date" data-row=${row} data-index=${index}
-                  data-year=${item.year} data-month=${item.month}
-                  data-date=${item.date} data-month-type=>${
-                item.html || item.date
-              }</td>
-              `;
-            })
-            .join("\n")}
-        </tr>\n
-      `;
-      row++;
-      rowDates = dates.slice(row * 7, row * 7 + 7);
-    }
-    let html = `
-      <div class="uix-calendar">
-        <div class="uix-calendar__header">
-          <div class="uix-calendar__selector">
-            <a href="javascript: 0;" class="uix-calendar__select-btn"><</a>
-            <span>2020</span>
-            <a href="javascript: 0;" class="uix-calendar__select-btn">></a>
-          </div>
-          <div class="uix-calendar__selector">
-            <a href="javascript: 0;" class="uix-calendar__select-btn"><</a>
-            <span>09</span>
-            <a href="javascript: 0;" class="uix-calendar__select-btn">></a>
-          </div>
-        </div>
-        <div class="uix-calendar__body">
-          <table class="uix-calendar__table">
-            <thead>
-              <tr>
-              ${weeksList
-                .map((item) => {
-                  return "<th>" + item + "</th>";
-                })
-                .join("\n")}
-              </tr>
-            </thead>
-            <tbody>
-              ${tbodyHtml}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    
-    `;
-    return html;
+    this._handleActiveClass();
   }
 }
 

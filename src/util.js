@@ -1,6 +1,19 @@
-const PREV_MONTH = "prev";
-const CURR_MONTH = "curr";
-const NEXT_MONTH = "next";
+import { DATE_TYPE, PREV_MONTH, CURR_MONTH, NEXT_MONTH } from "./const";
+
+import dot from "dot";
+dot.templateSettings = {
+  evaluate: /\{\{([\s\S]+?)\}\}/g,
+  interpolate: /\{\{=([\s\S]+?)\}\}/g,
+  encode: /\{\{!([\s\S]+?)\}\}/g,
+  use: /\{\{#([\s\S]+?)\}\}/g,
+  define: /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+  conditional: /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
+  iterate: /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
+  varname: "it",
+  strip: true,
+  append: true,
+  selfcontained: false,
+};
 
 export function genDates(year, month) {
   let res = [];
@@ -22,7 +35,9 @@ export function genDates(year, month) {
       obj_prevMonthLastDate.month,
       obj_prevMonthLastDate.date - count + i + 1
     );
-    date.monthType = res.push(genDateObj(date));
+    date = genDateObj(date);
+    date[DATE_TYPE] = PREV_MONTH;
+    res.push(date);
   }
   // 生成当前月的日期
   for (
@@ -35,7 +50,9 @@ export function genDates(year, month) {
       obj_currMonthFirstDate.month,
       i
     );
-    res.push(genDateObj(date));
+    date = genDateObj(date);
+    date[DATE_TYPE] = CURR_MONTH;
+    res.push(date);
   }
   // 生成下个月的日期
   let count1 = 6 * 7 - res.length;
@@ -45,9 +62,10 @@ export function genDates(year, month) {
       obj_nextMonthFirstDate.month,
       i
     );
-    res.push(genDateObj(date));
+    date = genDateObj(date);
+    date[DATE_TYPE] = NEXT_MONTH;
+    res.push(date);
   }
-
   return res;
 }
 
@@ -55,11 +73,26 @@ function newDate(year, month, date) {
   return new Date(year, month - 1, date);
 }
 
-function genDateObj(date) {
+export function genDateObj(date) {
   return {
     year: date.getFullYear(),
     month: date.getMonth() + 1,
     date: date.getDate(),
     day: date.getDay(),
+    fullDate: date,
   };
+}
+
+export function formatDate(year, month, date, joinSym = "/") {
+  return (
+    String(year) +
+    joinSym +
+    String(month).padStart(2, "00") +
+    joinSym +
+    String(date).padStart(2, "00")
+  );
+}
+
+export function template(tmpl, data) {
+  return dot.template(tmpl)(data);
 }

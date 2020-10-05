@@ -1,3 +1,6 @@
+@main-color: #d9822b;
+@gray: #ccc;
+
 .uix-calendar {
   width: 100%;
   .uix-calendar__header {
@@ -5,41 +8,52 @@
     justify-content: space-around;
     align-items: center;
     height: 30px;
-  }
-  .uix-calendar__selector {
-  }
-  .uix-calendar__selector span {
-    padding: 0 10px;
-    min-width: 80px;
-    display: inline-block;
-    box-sizing: border-box;
-    text-align: center;
-  }
-  .uix-calendar__select-btn {
-    text-decoration: none;
-    color: #000;
-    padding: 0 20px;
+    .uix-calendar__curr-year,
+    .uix-calendar__curr-month {
+      padding: 0 10px;
+      min-width: 80px;
+      display: inline-block;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .uix-calendar__select-btn {
+      text-decoration: none;
+      color: #000;
+      padding: 0 20px;
+    }
   }
 
   .uix-calendar__body {
     width: 100%;
-  }
-  .uix-calendar__table {
-    width: 100%;
-  }
-  .uix-calendar__date {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    height: 40px;
-    cursor: pointer;
-    padding: 0;
-    &:hover{
-      background-color: #eee;
-      border-radius: 2px;
+    .uix-calendar__table {
+      width: 100%;
+      table-layout: fixed;
     }
-    &.uix-calendar__date--active{
-      background-color: #d9822b;
+    .uix-calendar__date {
+      display: table-cell;
+      text-align: center;
+      vertical-align: middle;
+      height: 40px;
+      cursor: pointer;
+      padding: 0;
+      &:hover {
+        background-color: #eee;
+        border-radius: 2px;
+      }
+    }
+    .uix-calendar__date.uix-calendar__date--active {
+      background-color: @main-color;
+      color: #fff;
+    }
+    .uix-calendar__date--today {
+      color: @main-color;
+    }
+    .uix-calendar__date--gray {
+      color: @gray;
+    }
+    .uix-calendar__date--disabled {
+      color: @gray;
+      cursor: not-allowed;
     }
   }
 }

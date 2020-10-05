@@ -6,22 +6,61 @@
   </head>
   <body>
     <div class="wrapper wrapper2"></div>
+    <br />
+    <button onclick="getDates()">获取日期列表</button>
+    <button onclick="switchToMonth()">切换到2020-11</button>
 
     <style>
       .wrapper {
-        width: 400px;
+        width: 420px;
         border: 1px solid #ccc;
         padding: 6px;
+      }
+      .my-date {
+      }
+      .my-price {
+        font-size: 12px;
       }
     </style>
     <link rel="stylesheet" href="/dist/index.css" />
     <script src="/dist/index.js"></script>
     <script>
-      let c = new UixCalendar(document.querySelector(".wrapper2"), {
-        // renderMonth: [2020, 10],
+      var c = new UixCalendar(document.querySelector(".wrapper2"), {
+        // renderMonth: [2021, 10],
+        weeksList: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+        onChange: function (value) {
+          console.log("onChange", value);
+        },
+        onViewChange: function (data, isFirst) {
+          console.log("onViewChange", data, isFirst);
+        },
+        disableDateFunction: function (data) {
+          console.log("disableDateFunction");
+          let now = new Date() - 24 * 60 * 60 * 1000;
+          if (data.fullDate < now) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+        // renderFunction: function (data) {
+        //   return `
+        //     <div class="my-date-box">
+        //       <div class="my-date">${data.date}</div>
+        //       <div class="my-price">￥${100 + data.date}</div>
+        //     </div>
+        //   `;
+        // },
       });
-      console.log(c);
       c.mount();
+
+      window.getDates = function () {
+        console.log("getDates", c.getDates());
+      };
+
+      function switchToMonth() {
+        console.log("switchToMonth", c.switchToMonth(2020, 11));
+      }
     </script>
   </body>
 </html>
