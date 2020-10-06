@@ -1,6 +1,6 @@
 {
   "name": "uix-calendar",
-  "version": "1.0.0",
+  "version": "1.0.1-0",
   "description": "日历组件，适用于移动端和PC端，支持自定义渲染",
   "keywords": [
     "日历组件",
