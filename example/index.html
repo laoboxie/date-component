@@ -9,6 +9,9 @@
     <br />
     <button onclick="getDates()">获取日期列表</button>
     <button onclick="switchToMonth()">切换到2020-11</button>
+    <button onclick="show()">显示</button>
+    <button onclick="hide()">隐藏</button>
+    <button onclick="destroy()">销毁</button>
 
     <style>
       .wrapper {
@@ -26,6 +29,7 @@
     <script src="/dist/index.js"></script>
     <script>
       var c = new UixCalendar(document.querySelector(".wrapper2"), {
+        value: "2020-10-15",
         // renderMonth: [2021, 10],
         weeksList: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
         onChange: function (value) {
@@ -43,23 +47,30 @@
             return false;
           }
         },
-        // renderFunction: function (data) {
-        //   return `
-        //     <div class="my-date-box">
-        //       <div class="my-date">${data.date}</div>
-        //       <div class="my-price">￥${100 + data.date}</div>
-        //     </div>
-        //   `;
-        // },
+        renderFunction: function (data) {
+          return `
+            <div class="my-date-box">
+              <div class="my-date">${data.date}</div>
+              <div class="my-price">￥${100 + data.date}</div>
+            </div>
+          `;
+        },
       });
-      c.mount();
 
-      window.getDates = function () {
+      function getDates() {
         console.log("getDates", c.getDates());
-      };
-
+      }
       function switchToMonth() {
         console.log("switchToMonth", c.switchToMonth(2020, 11));
+      }
+      function show() {
+        console.log("show", c.show());
+      }
+      function hide() {
+        console.log("hide", c.hide());
+      }
+      function destroy() {
+        console.log("destroy", c.destroy());
       }
     </script>
   </body>

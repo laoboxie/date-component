@@ -1,6 +1,8 @@
 const gulp = require("gulp");
 const { series } = require("gulp");
 
+const path = require("path");
+
 const del = require("del");
 const browserSync = require("browser-sync").create();
 const less = require("gulp-less");
@@ -9,31 +11,29 @@ const webpackStream = require("webpack-stream");
 const webpackConfig = {
   entry: "./src/index.js",
   output: {
-    library: "futuCalendar",
-    libraryTarget: "umd",
-    filename: "./index.js",
-  },
-  resolve: {
-    modulesDirectories: ["./node_modules"],
+    filename: "index.js",
+    path: path.resolve(__dirname, "./dist"),
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.html$/,
-        loader: "string-loader",
+        use: {
+          loader: "string-loader",
+        },
       },
       {
         test: /\.js?$/,
-        exclude: "./node_modules",
-        loader: "babel-loader",
-        query: {
-          presets: ["es2015"],
+        exclude: path.resolve(__dirname, "./node_modules"),
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
         },
       },
     ],
   },
-  // watch: true,
-  devtool: "#source-map",
 };
 
 function clean(cb) {
