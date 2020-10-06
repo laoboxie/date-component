@@ -11,8 +11,11 @@ const webpackStream = require("webpack-stream");
 const webpackConfig = {
   entry: "./src/index.js",
   output: {
-    filename: "index.js",
     path: path.resolve(__dirname, "./dist"),
+    filename: "index.js",
+    libraryTarget: "umd",
+    library: "UixCalendar",
+    libraryExport: "default",
   },
   module: {
     rules: [

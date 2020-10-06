@@ -295,7 +295,4 @@ class UixCalendar {
   }
 }
 
-if (window) {
-  window.UixCalendar = UixCalendar;
-}
 export default UixCalendar;

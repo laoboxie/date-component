@@ -1,8 +1,12 @@
 {
-  "name": "date-component",
+  "name": "uix-calendar",
   "version": "1.0.0",
-  "description": "日期组件",
-  "main": "index.js",
+  "description": "日历组件，适用于移动端和PC端，支持自定义渲染",
+  "keywords": [
+    "日历组件",
+    "H5"
+  ],
+  "main": "dist/index.js",
   "directories": {
     "example": "example"
   },
@@ -11,18 +15,19 @@
     "build": "gulp build",
     "test": "jest",
     "test:unit": "jest test/unit.test.js",
-    "test:e2e": "jest test/e2e.test.js"
+    "test:e2e": "jest test/e2e.test.js",
+    "prepublishOnly": "npm run test && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/laoboxie/date-component.git"
+    "url": "git+https://github.com/laoboxie/uix-calendar.git"
   },
-  "author": "",
+  "author": "robertx",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/laoboxie/date-component/issues"
+    "url": "https://github.com/laoboxie/uix-calendar/issues"
   },
-  "homepage": "https://github.com/laoboxie/date-component#readme",
+  "homepage": "https://github.com/laoboxie/uix-calendar#readme",
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
