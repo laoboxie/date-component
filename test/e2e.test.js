@@ -1,6 +1,6 @@
-import "../dist/index";
+import UixCalendar from "../dist/index";
 
-let instance = new window.UixCalendar(document.body, {
+let instance = new UixCalendar(document.body, {
   value: "2020-10-15",
   renderMonth: [2020, 10],
   onChange: function (value) {},

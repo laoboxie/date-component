@@ -1,4 +1,79 @@
-# 日期组件
+# 日历组件
+
+一款简单的日历组件，原生 JS/CSS 开发，适用与移动端和 PC 端，支持自定义渲染日期 HTML。
+
+## 使用方式
+
+### npm
+
+```shell
+npm i uix-calendar --save
+```
+
+```javascript
+import Calendar from "uix-calendar";
+import "uix-calendar/dist/index.css"; // 提供默认样式，可以自定义开发所需样式
+
+var c = new Calendar(document.body);
+```
+
+### script
+
+```javascript
+<script src="/dist/index.js"></script>
+
+<script>
+var c = new UixCalendar(document.body)
+</script>
+```
+
+### 创建实例
+
+```javascript
+/**
+ * parentEle: 必填，组件挂载在parentEle下面
+ * options: 选填，具体配置看配置选项
+ * 具体使用方式可以看 /example/index.html
+ **/
+new UixCalendar(parentEle, options);
+```
+
+```javascript
+let instance = new UixCalendar(documnt.body, {
+  value: "2020-10-15",
+  // renderMonth: [2021, 10],
+  weeksList: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+  onChange: function (value) {
+    console.log("onChange", value);
+  },
+  onViewChange: function (data, isFirst) {
+    console.log("onViewChange", data, isFirst);
+  },
+  disableDateFunction: function (data) {
+    console.log("disableDateFunction");
+    let now = new Date() - 24 * 60 * 60 * 1000;
+    if (data.fullDate < now) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  renderFunction: function (data) {
+    return `
+            <div class="my-date-box">
+              <div class="my-date">${data.date}</div>
+              <div class="my-price">￥${100 + data.date}</div>
+            </div>
+          `;
+  },
+});
+
+instance.getDates();
+instance.switchToMonth(2030, 1);
+instance.show();
+instance.hide();
+instance.destroy();
+```
 
 ## 配置选项
 
@@ -34,7 +109,6 @@
 - [x] 抽离 css 样式
 - [x] 抽离 html
 - [x] jest 测试
-- [ ] 发布 npm 包
-
+- [x] 发布 npm 包
 - [ ] 支持 vue
-- [ ] 支持多选
+- [ ] 支持多选日期
